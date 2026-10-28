@@ -51,7 +51,7 @@ public class AppTest02
         SqlSession session=sessionFactory.openSession();
         //3.SqlSession对象操作数据库表 statement目前要和namespace+id一致  parameter:参数值
         Users user=new Users();
-        user.setName("张三");
+        user.setName("陈月月");
         user.setAge(18);
         int row=session.insert("com.aaa.Users.add",user);
         session.commit();//提交---增删改操作
@@ -84,7 +84,7 @@ public class AppTest02
         Users user=new Users();
         user.setName("李四");
         user.setAge(88);
-        user.setId(5);
+        user.setId(1);//注意:id必须是表中真实存在的,否则update匹配0行,返回0
         int row=session.update("com.aaa.Users.update",user);
         System.out.println(row);
         session.commit();//提交---增删改操作

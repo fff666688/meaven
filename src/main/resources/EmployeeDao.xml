@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Dao.EmployeeDao">
+
+    <resultMap id="EmployeeMapper" type="com.aaa.Employee">
+        <id property="empId" column="emp_id"/>
+        <result property="empName" column="emp_name"/>
+        <result property="hireDate" column="hire_date"/>
+        <!--gender/age/dept/job/salary/phone/email 列名和属性名一致，autoMapping 自动映射-->
+    </resultMap>
+
+
+    <insert id="batchAdd">
+        INSERT INTO employee (emp_name,gender,age,dept,job,salary,hire_date,phone,email) VALUES
+        <foreach collection="list" item="emp" separator=",">
+            (#{emp.empName},#{emp.gender},#{emp.age},#{emp.dept},#{emp.job},#{emp.salary},#{emp.hireDate},#{emp.phone},#{emp.email})
+        </foreach>
+    </insert>
+
+
+    <update id="update">
+        update employee
+        <set>
+            <if test="empName!=null and empName!=''">
+                emp_name=#{empName},
+            </if>
+            <if test="gender!=null and gender!=''">
+                gender=#{gender},
+            </if>
+            <if test="age!=null">
+                age=#{age},
+            </if>
+            <if test="dept!=null and dept!=''">
+                dept=#{dept},
+            </if>
+            <if test="job!=null and job!=''">
+                job=#{job},
+            </if>
+            <if test="salary!=null">
+                salary=#{salary},
+            </if>
+            <if test="hireDate!=null and hireDate!=''">
+                hire_date=#{hireDate},
+            </if>
+            <if test="phone!=null and phone!=''">
+                phone=#{phone},
+            </if>
+            <if test="email!=null and email!=''">
+                email=#{email},
+            </if>
+        </set>
+        where emp_id=#{empId}
+    </update>
+
+
+    <delete id="batchDelete">
+        delete from employee where emp_id in
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--where: 条件成立时自动补 where 关键字，并把第一个多余的 and 去掉-->
+    <select id="selectByCondition" resultMap="EmployeeMapper">
+        select * from employee
+        <where>
+            <if test="empName != null and empName != ''">
+                and emp_name = #{empName}
+            </if>
+            <if test="gender != null and gender != ''">
+                and gender = #{gender}
+            </if>
+            <if test="dept != null and dept != ''">
+                and dept = #{dept}
+            </if>
+            <if test="job != null and job != ''">
+                and job = #{job}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="selectByCondition2" resultMap="EmployeeMapper">
+        select * from employee
+        <where>
+            <choose>
+                <when test="empName!=null and empName!=''">
+                    and emp_name = #{empName}
+                </when>
+                <when test="dept!=null and dept!=''">
+                    and dept =#{dept}
+                </when>
+                <otherwise>
+                    and 1=1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+
+    <select id="selectByCondition3" resultMap="EmployeeMapper">
+        select * from employee
+        <where>
+            <choose>
+                <when test="empName!=null and empName!=''">
+                    and emp_name = #{empName}
+                </when>
+                <when test="dept!=null and dept!=''">
+                    and dept =#{dept}
+                </when>
+                <otherwise>
+                    and 1=1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+
+
+    <select id="selectByCondition4" resultMap="EmployeeMapper">
+        select * from employee
+        <trim prefix="where" prefixOverrides="and|or" >
+            <if test="empName!=null and empName!=''">
+                and emp_name = #{empName}
+            </if>
+            <if test="dept!=null and dept!=''">
+                or dept =#{dept}
+            </if>
+        </trim>
+    </select>
+</mapper>
