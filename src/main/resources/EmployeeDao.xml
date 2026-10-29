@@ -2,6 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Dao.EmployeeDao">
+    <!--开启二级缓存-->
+    <cache/>
 
     <resultMap id="EmployeeMapper" type="com.aaa.Employee">
         <id property="empId" column="emp_id"/>
@@ -129,4 +131,53 @@
             </if>
         </trim>
     </select>
+
+    <select id="selectByCondition5" resultMap="EmployeeMapper">
+        select * from employye where emd_id=#{id}
+    </select>
+
+    <!-- ==================== #{} 和 ${} 的区别 ==================== -->
+
+    <!-- 1. #{}：预编译占位符，值是参数，整串当一个"值"，防注入 -->
+    <select id="selectByNameHash" resultMap="EmployeeMapper">
+        select * from employee where emp_name = #{empName}
+    </select>
+
+    <!-- 2. ${}：字符串拼接，值直接拼进 SQL（字符串要自己加单引号） -->
+    <select id="selectByNameDollar" resultMap="EmployeeMapper">
+        select * from employee where emp_name = '${empName}'
+    </select>
+
+    <!-- 3. 排序用 #{}：编译成 order by ?，排的是常量，排序不生效 -->
+    <select id="orderByHash" resultMap="EmployeeMapper">
+        select * from employee order by #{column}
+    </select>
+
+    <!-- 4. 排序用 ${}：字段名拼进 SQL，排序生效（字段名没法预编译，只能用它） -->
+    <select id="orderByDollar" resultMap="EmployeeMapper">
+        select * from employee order by ${column}
+    </select>
+
+    <!-- 5. 模糊查询用 #{}：推荐，注意 % 要放在 #{} 外面 -->
+    <select id="searchByLikeHash" resultMap="EmployeeMapper">
+        select * from employee where emp_name like concat('%', #{keyword}, '%')
+    </select>
+
+    <select id="selectByName" resultType="com.aaa.Employee">
+        select * from employee where emp_name = '${name}'
+    </select>
+
+    <!-- 6. 模糊查询用 ${}：有注入风险 -->
+<select id="searchByLikeDollar" resultMap="EmployeeMapper">
+select * from employee where emp_name like '%${keyword}%'
+</select>
+
+    <!-- 7. 模糊查询标准写法：% 交给 concat，占位符只占"值"的位置 -->
+    <select id="selectByLikeName" resultMap="EmployeeMapper">
+        select * from employee where emp_name like concat('%', #{name}, '%')
+    </select>
+    <select id="selectById" resultMap="EmployeeMapper">
+        select * from employee where emp_id=#{id}
+    </select>
+
 </mapper>

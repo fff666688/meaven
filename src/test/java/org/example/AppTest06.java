@@ -13,13 +13,8 @@ import java.util.List;
 
 public class AppTest06 {
 
-    //1.读取配置文件---解析配置文件。mybatis知道连接的数据库和账号密码。 知道映射文件中内容。
-    //2.获取SqlSessionFactory对象
-    //3.获取SqlSession对象----理解为：Connection对象。其中包含对表的各种操作方法。
-    //4.获取EmployeeDao的代理实现类对象。
-
     @Test
-    public void test1() throws Exception {   // 情况1：name+dept 都传，choose 只走第一个 when
+    public void test1() throws Exception {
         Reader reader = Resources.getResourceAsReader("conf.xml");
         SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
         SqlSession session = sessionFactory.openSession();
@@ -36,7 +31,7 @@ public class AppTest06 {
     }
 
     @Test
-    public void test2() throws Exception {   // 情况2：只传 dept，走第二个 when
+    public void test2() throws Exception {
         Reader reader = Resources.getResourceAsReader("conf.xml");
         SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
         SqlSession session = sessionFactory.openSession();
@@ -51,7 +46,7 @@ public class AppTest06 {
     }
 
     @Test
-    public void test3() throws Exception {   // 情况3：什么都不传，走 otherwise 的 1=1
+    public void test3() throws Exception {
         Reader reader = Resources.getResourceAsReader("conf.xml");
         SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
         SqlSession session = sessionFactory.openSession();
